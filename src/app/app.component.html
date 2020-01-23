@@ -3,6 +3,8 @@
     <!-- Left -->
     <div class="column">
 
+        <button mat-button (click)="hehe()">Click Me!</button>
+
         <mat-list>
             <mat-list-item draggable [dragData]="pdfElement" *ngFor="let pdfElement of pdfElements">
                 {{getLabelForType(pdfElement)}} ({{getKeyForType(pdfElement)}})

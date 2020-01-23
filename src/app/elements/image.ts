@@ -1,5 +1,6 @@
+import * as pdfMake from "pdfmake/build/pdfmake";
 import { forkJoin, Observable, Observer } from "rxjs";
-import { map, shareReplay } from "rxjs/operators";
+import { map, mapTo, shareReplay, tap } from "rxjs/operators";
 import { PdfElement } from "./pdf-element";
 
 export class PdfImage extends PdfElement {
@@ -9,6 +10,16 @@ export class PdfImage extends PdfElement {
     public constructor(
         public url: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAAM1BMVEXp7vG6vsHW2t3Z3uHFys3i5+nDx8rCx8rm6+69wcTT2Nve4+bQ1djLz9K/w8bj6Ovg5egGh/fpAAACkElEQVR42uzBgQAAAACAoP2pF6kCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABm5w50YwWBKAxzHHcXUNy+/9PeW9t0EhcLpMVG5/xv4JeogHEYY4yxHzSlB/oVxujdVXqO6F0Y3DW6LTig5K6QX3BIs7tACQf15k7fE/vxRtwUcVjnfyUmrAW59eot4aPJnb071qLr2II1cWfvccCF3IlFrI+IRSxiFeqP5YeUxhQnYhWxngmfPYRY32NJgJY8sXJY+f3P3RNrF0uwaSTWHpYP2DYQawdrxkvBEyuPFfCaECuLNSFTIlYWa0CmhysVJ4tYMzKFohXCRKw6rAggTPawmm5DtVq1zGG1PeDVatWyhtW4dFCrVcsaVv2iVK1UyxhWw3ZHrVTLFlbLRlqtVMsWVu6IpmylWraw6g//IpDRsoVVPFZWq6yWLSzn/DDrB4tKK9UyhqU1WKkWscpWqkWsspVqEatspVrEKlupFrHUqqxlEcs3WqmWPSxZbo1WqmUNSwDVUqtKLVtYAqiWWlVrWcISYKMV0VLwdrAE2GhFtGUHS4CNVgSx3pNdK9WKINaa7FmpVgSx8hci2LTMIFYeS/AasfJYAmLVYgmIVYslIFYtloBYtVgCYtViCYhViyUgVi2WgFjVWDOxiEWsYsRqiFgNEashYjVErIaI1RCxGuqMNQ2/2rWxyvFPVmIRyxGrIWL9Yff+82l9uApWwqfW0K37ZUbgDjiq4E6fD/gmTqL+m3nB4fzTgv83onNXeby/53NatNorBnRuPP+b8CsvaexXms8/r5sxxhhjjDH2rz04JAAAAAAQ9P+1MywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKMAbHYmDBuDihQAAAAASUVORK5CYII=",
     ) { super(); }
+
+    public addImageToVFS(url: string): Observable<string> {
+        return this.getBase64ImageFromURL(url).pipe(
+            tap((imageBase64) => {
+                imageBase64 = imageBase64.substring(imageBase64.indexOf(","));
+                pdfMake.vfs[this.url] = imageBase64;
+            }),
+            mapTo(url), // return the key to the VFS
+        );
+    }
 
     public getBase64ImageFromURL(url: string): Observable<string> {
 
@@ -67,7 +78,7 @@ export class PdfImage extends PdfElement {
 
     public build() {
         return forkJoin(
-            this.getBase64ImageFromURL(this.url),
+            this.addImageToVFS(this.url),
             this.getBuildedChildren(),
         ).pipe(
             map(([image, children]) => ({

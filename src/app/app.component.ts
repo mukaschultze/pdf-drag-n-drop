@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, Type } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import pdfMake from "pdfmake/build/pdfmake";
+import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { Observable, Observer, of, Subscription } from "rxjs";
 import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
@@ -102,6 +102,8 @@ export class AppComponent implements OnInit, OnDestroy {
     public getLabelForType(type: Type<PdfElement>) {
         return new type().label();
     }
+
+    public hehe() { }
 
     public buildPdf(): Observable<string> {
         return of(undefined).pipe(
