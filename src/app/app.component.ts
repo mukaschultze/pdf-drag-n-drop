@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Type } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { Observable, Observer, of, Subscription } from "rxjs";
 import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
 import { PdfColumns } from "./elements/columns";
@@ -13,7 +13,7 @@ import { PdfElement } from "./elements/pdf-element";
 import { PdfText } from "./elements/text";
 import { PdfGeneratorService } from "./services/pdf-generator.service";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
 
 @Component({
     selector: "app-root",

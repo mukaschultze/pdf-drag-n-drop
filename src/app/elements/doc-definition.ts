@@ -1,3 +1,5 @@
+import { TDocumentDefinitions } from "pdfmake/build/pdfmake";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { PdfContent } from "./content";
 import { PdfElement } from "./pdf-element";
@@ -14,12 +16,12 @@ export class DocDefinition extends PdfElement {
         ];
     }
 
-    public build() {
+    public build(): Observable<TDocumentDefinitions> {
         return this.getBuildedChildren().pipe(
             map((children) => children.reduce((acc, val) => ({
                 ...acc,
                 ...val,
-            }), {})),
+            }), {}) as TDocumentDefinitions),
         );
     }
 
