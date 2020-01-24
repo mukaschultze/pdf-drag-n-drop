@@ -18,20 +18,3 @@ export class PdfTableRow extends PdfElement {
     }
 
 }
-
-// const rep = (reportData) => {
-//     const content = [];
-//     for (const cont of reportData.content) {
-//         if (cont.type == "table") { } ...
-
-//     }
-// };
-
-// interface ReportData {
-//     data: string;
-//     content: [
-//         {
-//             type: "table",
-//         }
-//     ];
-// }
