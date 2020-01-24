@@ -10,6 +10,7 @@ import { DocDefinition } from "./elements/doc-definition";
 import { PdfImage } from "./elements/image";
 import { PdfList } from "./elements/list";
 import { PdfElement } from "./elements/pdf-element";
+import { PdfTable } from "./elements/table";
 import { PdfText } from "./elements/text";
 import { PdfGeneratorService } from "./services/pdf-generator.service";
 
@@ -54,10 +55,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.pdfService.addChildNode(columns, new PdfImage("https://picsum.photos/150/350"));
         this.pdfService.addChildNode(columns, new PdfImage("https://picsum.photos/200/200"));
 
-        for (let i = 0; i < 200; i++) {
-            this.pdfService.addChildNode(content, columns);
-            this.pdfService.addChildNode(content, new PdfText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-        }
+        // for (let i = 0; i < 200; i++) {
+        //     this.pdfService.addChildNode(content, columns);
+        //     this.pdfService.addChildNode(content, new PdfText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        // }
 
         this.pdfService.addChildNode(content, new PdfText("Imagens acima"));
 
@@ -66,6 +67,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.pdfService.addChildNode(list, new PdfText("Item número 1"));
         this.pdfService.addChildNode(list, new PdfText("Item número 2"));
         this.pdfService.addChildNode(list, new PdfText("Item número 3"));
+
+        this.pdfService.addChildNode(content, new PdfTable([
+            [new PdfText("1"), new PdfText("2"), new PdfText("3")],
+            [new PdfText("3"), new PdfText("4"), new PdfText("5")],
+            [new PdfText("6"), new PdfText("7"), new PdfText("8")],
+        ]));
 
         this.pdfService.setCurrentPdf(this.docDefinition);
 
