@@ -1,31 +1,28 @@
-import { map } from "rxjs/operators";
-import { PdfImage } from "./image";
+import { of } from "rxjs";
+import { ReportPayload, ReportProperty } from "../services/reports.service";
 import { PdfElement } from "./pdf-element";
 
 export class PdfText extends PdfElement {
 
     public constructor(
-        public text: string = "",
+        public property: ReportProperty | string,
     ) { super(); }
 
     public key = () => "text";
 
-    public label = () => `Texto (${(this.text || "Vazio").substring(0, 30)})`;
+    public label = () => `Texto`;
 
     public allowedChildElements() {
-        return [
-            PdfText,
-            PdfImage,
-        ];
+        return [];
     }
 
-    public build() {
-        return this.getBuildedChildren().pipe(
-            map((children) => [
-                { text: this.text },
-                ...children,
-            ]),
-        );
+    public build(payload?: ReportPayload) {
+
+        const text = typeof (this.property) === "string" ?
+            this.property :
+            (this.getProperty(this.property, payload) || this.property.name);
+
+        return of({ text });
     }
 
 }

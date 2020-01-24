@@ -7,12 +7,14 @@ import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, 
 import { PdfColumns } from "./elements/columns";
 import { PdfContent } from "./elements/content";
 import { DocDefinition } from "./elements/doc-definition";
+import { PdfFor } from "./elements/for";
 import { PdfImage } from "./elements/image";
 import { PdfList } from "./elements/list";
 import { PdfElement } from "./elements/pdf-element";
 import { PdfTable } from "./elements/table";
 import { PdfText } from "./elements/text";
 import { PdfGeneratorService } from "./services/pdf-generator.service";
+import { ReportsService } from "./services/reports.service";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
 
@@ -38,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     constructor(
         private pdfService: PdfGeneratorService,
+        private reports: ReportsService,
         private sanitizer: DomSanitizer,
     ) { }
 
@@ -61,9 +64,9 @@ export class AppComponent implements OnInit, OnDestroy {
         // }
 
         this.pdfService.addChildNode(content, new PdfText("Imagens acima"));
-
         this.pdfService.addChildNode(content, list);
-        this.pdfService.addChildNode(list, new PdfText("Item número 1"));
+        this.pdfService.addChildNode(list, new PdfFor({ name: "values", type: "array" }));
+        this.pdfService.addChildNode(list.children[0], new PdfText({ name: "name", type: "string" }));
         this.pdfService.addChildNode(list, new PdfText("Item número 1"));
         this.pdfService.addChildNode(list, new PdfText("Item número 2"));
         this.pdfService.addChildNode(list, new PdfText("Item número 3"));
@@ -113,11 +116,26 @@ export class AppComponent implements OnInit, OnDestroy {
     public hehe() { }
 
     public buildPdf(): Observable<string> {
+
+        const payload = {
+            values: [
+                { name: "Name number 1" },
+                { name: "Name number 2" },
+                { name: "Name number 3" },
+                { name: "Name number 4" },
+                { name: "Name number 5" },
+                { name: "Name number 6" },
+                { name: "Name number 7" },
+            ],
+        };
+
         return of(undefined).pipe(
             tap(() => console.time("Build PDF components")),
-            mergeMap(() => this.docDefinition.build()),
+            mergeMap(() => this.reports.generateReport(this.docDefinition, payload)),
             tap(() => console.timeEnd("Build PDF components")),
             mergeMap((source) => new Observable((observer: Observer<string>) => {
+
+                // console.log(JSON.stringify(source, null, 2));
 
                 source = {
                     ...source,

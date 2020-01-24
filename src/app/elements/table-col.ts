@@ -1,3 +1,4 @@
+import { ReportPayload } from "../services/reports.service";
 import { PdfImage } from "./image";
 import { PdfList } from "./list";
 import { PdfElement } from "./pdf-element";
@@ -17,8 +18,8 @@ export class PdfTableColumn extends PdfElement {
         ];
     }
 
-    public build() {
-        return this.getBuildedChildren();
+    public build(payload?: ReportPayload) {
+        return this.getBuildedChildren(payload);
     }
 
 }

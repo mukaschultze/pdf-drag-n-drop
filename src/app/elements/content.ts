@@ -1,4 +1,5 @@
 import { map } from "rxjs/operators";
+import { ReportPayload } from "../services/reports.service";
 import { PdfColumns } from "./columns";
 import { PdfImage } from "./image";
 import { PdfList } from "./list";
@@ -20,8 +21,8 @@ export class PdfContent extends PdfElement {
         ];
     }
 
-    public build() {
-        return this.getBuildedChildren().pipe(
+    public build(payload?: ReportPayload) {
+        return this.getBuildedChildren(payload).pipe(
             map((content) => ({ content })),
         );
     }

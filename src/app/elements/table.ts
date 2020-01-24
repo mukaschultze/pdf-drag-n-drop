@@ -1,4 +1,5 @@
 import { map } from "rxjs/operators";
+import { ReportPayload } from "../services/reports.service";
 import { PdfElement } from "./pdf-element";
 import { PdfTableColumn } from "./table-col";
 import { PdfTableRow } from "./table-row";
@@ -31,8 +32,8 @@ export class PdfTable extends PdfElement {
         ];
     }
 
-    public build() {
-        return this.getBuildedChildren().pipe(
+    public build(payload?: ReportPayload) {
+        return this.getBuildedChildren(payload).pipe(
             map((children) => ({ table: { body: children } })),
         );
     }

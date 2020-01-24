@@ -1,6 +1,7 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
-import { forkJoin, Observable, Observer } from "rxjs";
+import { Observable, Observer } from "rxjs";
 import { map, mapTo, shareReplay, tap } from "rxjs/operators";
+import { ReportPayload } from "../services/reports.service";
 import { PdfElement } from "./pdf-element";
 
 export class PdfImage extends PdfElement {
@@ -70,23 +71,13 @@ export class PdfImage extends PdfElement {
     public label = () => `Imagem (${(this.url || "Vazia").substring(0, 30)})`;
 
     public allowedChildElements() {
-        return [
-            // PdfText,
-            PdfImage,
-        ];
+        return [];
     }
 
-    public build() {
-        return forkJoin(
-            this.addImageToVFS(this.url),
-            this.getBuildedChildren(),
-        ).pipe(
-            map(([image, children]) => ({
-                image,
-                ...children,
-            })),
+    public build(payload?: ReportPayload) {
+        return this.addImageToVFS(this.url).pipe(
+            map((image) => ({ image })),
         );
-
     }
 
 }
