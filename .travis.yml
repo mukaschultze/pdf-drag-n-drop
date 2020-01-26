@@ -11,8 +11,11 @@ script:
   - npm run build
 
 deploy:
-    provider: script
-    script: npm run gh-pages
-    skip_cleanup: true
-    on:
-        branch: master
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: false
+  local_dir: dist
+  target_branch: gh-pages
+  on:
+    branch: master
