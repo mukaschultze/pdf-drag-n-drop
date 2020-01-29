@@ -12,7 +12,7 @@ import { PdfGeneratorService } from "../services/pdf-generator.service";
 })
 export class PdfTreeComponent implements OnInit, OnDestroy {
 
-    public treeControl = new NestedTreeControl<PdfElement>((node) => node.children);
+    public treeControl = new NestedTreeControl<PdfElement>((node) => []);
     public dataSource = new MatTreeNestedDataSource<PdfElement>();
 
     private subscriptions = new Subscription();
@@ -37,15 +37,13 @@ export class PdfTreeComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    public hasChild = (_: number, node: PdfElement) => !!node.children && node.children.length > 0;
+    public hasChild = (_: number, node: PdfElement) => false; // !!node.children && node.children.length > 0;
 
     public onItemDrop(node: PdfElement, { dragData: draggedType }: { dragData: Type<PdfElement> }) {
         this.pdfService.addChildNode(node, new draggedType());
     }
 
     public isDropAllowed = (node: PdfElement) => {
-        return (element: Type<PdfElement>) => !!node
-            .allowedChildElements()
-            .find((ac) => ac === element);
+        return true;
     }
 }

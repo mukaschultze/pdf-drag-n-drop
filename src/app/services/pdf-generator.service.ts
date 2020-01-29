@@ -17,7 +17,7 @@ export class PdfGeneratorService {
   }
 
   public addChildNode(parent: PdfElement, child: PdfElement) {
-    parent.children.push(child);
+    // parent.children.push(child);
     this._currentPdf.next({ ...this._currentPdf.value as any });
   }
 

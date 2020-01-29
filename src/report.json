@@ -1,0 +1,89 @@
+{
+    "report": {
+        "key": "root",
+        "elements": [
+            {
+                "key": "header",
+                "elements": [
+                    {
+                        "key": "text-static",
+                        "text": "Texto estático"
+                    },
+                    {
+                        "key": "text-dynamic",
+                        "prop": "text"
+                    }
+                ]
+            },
+            {
+                "key": "content",
+                "elements": [
+                    {
+                        "key": "image",
+                        "url": "https://picsum.photos/1000/300"
+                    },
+                    {
+                        "key": "columns",
+                        "elements": [
+                            {
+                                "key": "foreach",
+                                "let": "url",
+                                "of": "images",
+                                "elements": [
+                                    {
+                                        "key": "image",
+                                        "prop": "url"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "key": "stack",
+                        "elements": [
+                            {
+                                "key": "foreach",
+                                "let": "item",
+                                "of": "array",
+                                "elements": [
+                                    {
+                                        "key": "text-dynamic",
+                                        "prop": "item.text"
+                                    },
+                                    {
+                                        "key": "text-static",
+                                        "text": "START"
+                                    },
+                                    {
+                                        "key": "foreach",
+                                        "let": "item",
+                                        "of": "array",
+                                        "elements": [
+                                            {
+                                                "key": "text-dynamic",
+                                                "prop": "item.text"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "key": "text-static",
+                                        "text": "END"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "key": "footer",
+                "elements": [
+                    {
+                        "key": "image",
+                        "url": "https://picsum.photos/200/300"
+                    }
+                ]
+            }
+        ]
+    }
+}

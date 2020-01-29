@@ -1,0 +1,36 @@
+{
+    "payload": {
+        "text": "Um texto",
+        "images": [
+            "https://picsum.photos/150/300",
+            "https://picsum.photos/300/300",
+            "https://picsum.photos/250/300",
+            "https://picsum.photos/200/400",
+            "https://picsum.photos/200/320",
+            "https://picsum.photos/200/400"
+        ],
+        "array": [
+            {
+                "text": "Item N0"
+            },
+            {
+                "text": "Item N1"
+            },
+            {
+                "text": "Item N2"
+            },
+            {
+                "text": "Item N3"
+            },
+            {
+                "text": "Item N4"
+            },
+            {
+                "text": "Item N5"
+            },
+            {
+                "text": "Item N6"
+            }
+        ]
+    }
+}

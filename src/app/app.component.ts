@@ -4,17 +4,12 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { Observable, Observer, of, Subscription } from "rxjs";
 import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
-import { PdfColumns } from "./elements/columns";
-import { PdfContent } from "./elements/content";
-import { DocDefinition } from "./elements/doc-definition";
-import { PdfFor } from "./elements/for";
-import { PdfImage } from "./elements/image";
-import { PdfList } from "./elements/list";
+import { payload } from "../payload.json";
+import { report } from "../report.json";
+import { RootPDF } from "./elements/band.js";
 import { PdfElement } from "./elements/pdf-element";
-import { PdfTable } from "./elements/table";
-import { PdfText } from "./elements/text";
 import { PdfGeneratorService } from "./services/pdf-generator.service";
-import { ReportsService } from "./services/reports.service";
+import { ReportsService } from "./services/reports.service.js";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
 
@@ -26,14 +21,13 @@ import { ReportsService } from "./services/reports.service";
 export class AppComponent implements OnInit, OnDestroy {
 
     public pdfSrc?: SafeResourceUrl;
-    public docDefinition = new DocDefinition();
 
     public pdfElements: Type<PdfElement>[] = [
         // PdfContent,
-        PdfColumns,
-        PdfText,
-        PdfImage,
-        PdfList,
+        // PdfColumns,
+        // PdfText,
+        // PdfImage,
+        // PdfList,
     ];
 
     private subscriptions = new Subscription();
@@ -46,41 +40,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
 
-        const columns = new PdfColumns();
-        const content = new PdfContent();
-        const list = new PdfList();
-
-        this.pdfService.addChildNode(this.docDefinition, content);
-        this.pdfService.addChildNode(content, new PdfText("Imagens abaixo"));
-
-        this.pdfService.addChildNode(content, columns);
-        this.pdfService.addChildNode(columns, new PdfImage("https://picsum.photos/200/300"));
-        this.pdfService.addChildNode(columns, new PdfImage("https://picsum.photos/150/350"));
-        this.pdfService.addChildNode(columns, new PdfImage("https://picsum.photos/200/200"));
-
-        // for (let i = 0; i < 200; i++) {
-        //     this.pdfService.addChildNode(content, columns);
-        //     this.pdfService.addChildNode(content, new PdfText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-        // }
-
-        this.pdfService.addChildNode(content, new PdfText("Imagens acima"));
-        this.pdfService.addChildNode(content, list);
-        this.pdfService.addChildNode(list, new PdfFor({ name: "values", type: "array" }));
-        this.pdfService.addChildNode(list.children[0], new PdfText({ name: "name", type: "string" }));
-        this.pdfService.addChildNode(list, new PdfText("Item número 1"));
-        this.pdfService.addChildNode(list, new PdfText("Item número 2"));
-        this.pdfService.addChildNode(list, new PdfText("Item número 3"));
-
-        this.pdfService.addChildNode(content, new PdfTable([
-            [new PdfText("1"), new PdfText("2"), new PdfText("3")],
-            [new PdfText("3"), new PdfText("4"), new PdfText("5")],
-            [new PdfText("6"), new PdfText("7"), new PdfText("8")],
-        ]));
-
-        this.pdfService.setCurrentPdf(this.docDefinition);
+        this.pdfService.setCurrentPdf(report as any);
 
         const latestBuiltPdf = this.pdfService.currentPdf.pipe(
-            debounceTime(1000), // 1sec
+            debounceTime(150),
             switchMapTo(this.buildPdf()),
             shareReplay(1),
         );
@@ -105,37 +68,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    public getKeyForType(type: Type<PdfElement>) {
-        return new type().key();
-    }
-
-    public getLabelForType(type: Type<PdfElement>) {
-        return new type().label();
-    }
-
-    public hehe() { }
-
     public buildPdf(): Observable<string> {
-
-        const payload = {
-            values: [
-                { name: "Name number 1" },
-                { name: "Name number 2" },
-                { name: "Name number 3" },
-                { name: "Name number 4" },
-                { name: "Name number 5" },
-                { name: "Name number 6" },
-                { name: "Name number 7" },
-            ],
-        };
-
         return of(undefined).pipe(
             tap(() => console.time("Build PDF components")),
-            mergeMap(() => this.reports.generateReport(this.docDefinition, payload)),
+            mergeMap(() => this.reports.generateReport(report as RootPDF, payload)),
             tap(() => console.timeEnd("Build PDF components")),
             mergeMap((source) => new Observable((observer: Observer<string>) => {
 
-                // console.log(JSON.stringify(source, null, 2));
+                console.log(JSON.stringify(source, null, 2));
 
                 source = {
                     ...source,
