@@ -6,12 +6,17 @@
                 "key": "header",
                 "elements": [
                     {
-                        "key": "text-static",
-                        "text": "Texto estático"
-                    },
-                    {
-                        "key": "text-dynamic",
-                        "prop": "text"
+                        "key": "columns",
+                        "elements": [
+                            {
+                                "key": "text-static",
+                                "text": "Texto estático"
+                            },
+                            {
+                                "key": "text-dynamic",
+                                "prop": "text"
+                            }
+                        ]
                     }
                 ]
             },
