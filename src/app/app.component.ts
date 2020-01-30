@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Type } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
@@ -7,7 +7,7 @@ import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, 
 import { payload } from "../payload.json";
 import { report } from "../report.json";
 import { RootPDF } from "./elements/band.js";
-import { PdfElement } from "./elements/pdf-element";
+import { NodesService } from "./services/nodes.service.js";
 import { PdfGeneratorService } from "./services/pdf-generator.service";
 import { ReportsService } from "./services/reports.service.js";
 
@@ -22,21 +22,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public pdfSrc?: SafeResourceUrl;
 
-    public pdfElements: Type<PdfElement>[] = [
-        // PdfContent,
-        // PdfColumns,
-        // PdfText,
-        // PdfImage,
-        // PdfList,
-    ];
-
     private subscriptions = new Subscription();
 
     constructor(
         private pdfService: PdfGeneratorService,
+        private nodes: NodesService,
         private reports: ReportsService,
         private sanitizer: DomSanitizer,
     ) { }
+
+    public get availableNodes() {
+        return this.nodes.getAvailableNodes();
+    }
 
     public ngOnInit() {
 
@@ -75,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy {
             tap(() => console.timeEnd("Build PDF components")),
             mergeMap((source) => new Observable((observer: Observer<string>) => {
 
-                console.log(JSON.stringify(source, null, 2));
+                // console.log(JSON.stringify(source, null, 2));
 
                 source = {
                     ...source,

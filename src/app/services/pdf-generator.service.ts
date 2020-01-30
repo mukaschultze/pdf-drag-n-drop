@@ -1,24 +1,23 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { DocDefinition } from "../elements/doc-definition";
-import { PdfElement } from "../elements/pdf-element";
+import * as elements from "../elements/band";
 
 @Injectable({ providedIn: "root" })
 export class PdfGeneratorService {
 
-  private _currentPdf = new BehaviorSubject<DocDefinition>(undefined);
+    private _currentPdf = new BehaviorSubject<elements.Element>(undefined);
 
-  public get currentPdf(): Observable<DocDefinition> {
-    return this._currentPdf.asObservable();
-  }
+    public get currentPdf(): Observable<elements.Element> {
+        return this._currentPdf.asObservable();
+    }
 
-  public setCurrentPdf(pdf: DocDefinition) {
-    this._currentPdf.next(pdf);
-  }
+    public setCurrentPdf(pdf: elements.Element) {
+        this._currentPdf.next(pdf);
+    }
 
-  public addChildNode(parent: PdfElement, child: PdfElement) {
-    // parent.children.push(child);
-    this._currentPdf.next({ ...this._currentPdf.value as any });
-  }
+    public addChildNode(parent: elements.Element, child: elements.Element) {
+        // parent.children.push(child);
+        this._currentPdf.next({ ...this._currentPdf.value as any });
+    }
 
 }

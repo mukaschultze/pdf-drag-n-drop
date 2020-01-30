@@ -2,7 +2,8 @@ import { NestedTreeControl } from "@angular/cdk/tree";
 import { Component, OnDestroy, OnInit, Type } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { Subscription } from "rxjs";
-import { PdfElement } from "../elements/pdf-element";
+import * as elements from "../elements/band";
+import { NodesService } from "../services/nodes.service";
 import { PdfGeneratorService } from "../services/pdf-generator.service";
 
 @Component({
@@ -12,13 +13,14 @@ import { PdfGeneratorService } from "../services/pdf-generator.service";
 })
 export class PdfTreeComponent implements OnInit, OnDestroy {
 
-    public treeControl = new NestedTreeControl<PdfElement>((node) => []);
-    public dataSource = new MatTreeNestedDataSource<PdfElement>();
+    public treeControl = new NestedTreeControl<elements.Element>((node) => (node as elements.InternalElement).elements || []);
+    public dataSource = new MatTreeNestedDataSource<elements.Element>();
 
     private subscriptions = new Subscription();
 
     constructor(
         private pdfService: PdfGeneratorService,
+        private nodes: NodesService,
     ) { }
 
     public ngOnInit() {
@@ -37,13 +39,30 @@ export class PdfTreeComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    public hasChild = (_: number, node: PdfElement) => false; // !!node.children && node.children.length > 0;
+    public hasChild = (_: number, node: elements.InternalElement) => !!node.elements && node.elements.length > 0;
 
-    public onItemDrop(node: PdfElement, { dragData: draggedType }: { dragData: Type<PdfElement> }) {
+    public onItemDrop(node: elements.Element, { dragData: draggedType }: { dragData: Type<elements.Element> }) {
         this.pdfService.addChildNode(node, new draggedType());
     }
 
-    public isDropAllowed = (node: PdfElement) => {
+    public isDropAllowed = (node: elements.Element) => {
         return true;
     }
+
+    public getNodeForElement(element: elements.Element) {
+        return this.nodes.getNodeForKey(element.key);
+    }
+
+    public getProps(node: elements.Element) {
+
+        const bannedKeys = [
+            "key",
+            "elements",
+        ];
+
+        return Object.entries(node)
+            .filter(([key]) => !bannedKeys.find((banned) => banned === key))
+            .map(([key, value]) => ({ key, value }));
+    }
+
 }

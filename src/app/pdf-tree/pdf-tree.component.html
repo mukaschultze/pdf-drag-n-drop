@@ -1,5 +1,5 @@
 <ng-template let-node="node" #nodeTemplate>
-    <!-- {{node.label()}} -->
+    {{getNodeForElement(node).name}}
 </ng-template>
 
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
@@ -17,6 +17,10 @@
 
             <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
                 <ng-container matTreeNodeOutlet></ng-container>
+
+                <mat-list>
+                    <mat-list-item *ngFor="let prop of getProps(node)"> {{prop.key}}: {{prop.value}} </mat-list-item>
+                </mat-list>
             </ul>
 
         </li>
