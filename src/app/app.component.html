@@ -5,8 +5,8 @@
 
         <!-- <button mat-button (click)="hehe()">Click Me!</button> -->
 
-        <mat-list>
-            <mat-list-item draggable [dragData]="node" *ngFor="let node of availableNodes">
+        <mat-list cdkDropList [cdkDropListData]="availableNodes" cdkDropListSortingDisabled *ngIf="false">
+            <mat-list-item cdkDrag [cdkDragData]="node" *ngFor="let node of availableNodes">
                 {{node.name}} ({{node.key}})
             </mat-list-item>
         </mat-list>

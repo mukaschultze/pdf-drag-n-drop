@@ -5,6 +5,7 @@ export interface Band {
 
 export interface Element {
     key: string;
+    elements?: Element[];
 }
 
 export interface LeafElement extends Element {

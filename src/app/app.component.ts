@@ -2,13 +2,12 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import { Observable, Observer, of, Subscription } from "rxjs";
+import { Observable, Observer, Subscription } from "rxjs";
 import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
 import { payload } from "../payload.json";
 import { report } from "../report.json";
-import { RootPDF } from "./elements/band.js";
 import { NodesService } from "./services/nodes.service.js";
-import { PdfGeneratorService } from "./services/pdf-generator.service";
+import { PdfBuilder } from "./services/pdf-generator.service";
 import { ReportsService } from "./services/reports.service.js";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
-        private pdfService: PdfGeneratorService,
+        private pdfBuilder: PdfBuilder,
         private nodes: NodesService,
         private reports: ReportsService,
         private sanitizer: DomSanitizer,
@@ -37,9 +36,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
 
-        this.pdfService.setCurrentPdf(report as any);
+        this.pdfBuilder.setCurrentPdf(report as any);
 
-        const latestBuiltPdf = this.pdfService.currentPdf.pipe(
+        const latestBuiltPdf = this.pdfBuilder.outputTemplate.pipe(
             debounceTime(150),
             switchMapTo(this.buildPdf()),
             shareReplay(1),
@@ -66,9 +65,9 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     public buildPdf(): Observable<string> {
-        return of(undefined).pipe(
+        return this.pdfBuilder.outputTemplate.pipe(
             tap(() => console.time("Build PDF components")),
-            mergeMap(() => this.reports.generateReport(report as RootPDF, payload)),
+            mergeMap((template) => this.reports.generateReport(template, payload)),
             tap(() => console.timeEnd("Build PDF components")),
             mergeMap((source) => new Observable((observer: Observer<string>) => {
 
