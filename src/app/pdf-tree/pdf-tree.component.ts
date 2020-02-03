@@ -2,7 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
-import { FlatNode, Node, PdfBuilder } from "../services/pdf-generator.service";
+import { FlatNode, Node, PdfBuilder } from "../services/pdf-builder.service";
 
 @Component({
     selector: "pdf-tree",

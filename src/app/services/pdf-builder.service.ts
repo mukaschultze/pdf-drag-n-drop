@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import { debounceTime, map } from "rxjs/operators";
+import { debounceTime, map, shareReplay } from "rxjs/operators";
 import { Element, RootPDF } from "../elements/band";
 
 export interface Node {
@@ -23,6 +23,7 @@ export class PdfBuilder {
         debounceTime(5),
         map((arr) => arr.map((n) => this.node2Element(n))),
         map((arr) => ({ key: "root", elements: arr } as RootPDF)),
+        shareReplay(1),
     );
 
     get data(): Node[] { return this.dataChange.value; }

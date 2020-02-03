@@ -7,7 +7,7 @@ import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, 
 import { payload } from "../payload.json";
 import { report } from "../report.json";
 import { NodesService } from "./services/nodes.service.js";
-import { PdfBuilder } from "./services/pdf-generator.service";
+import { PdfBuilder } from "./services/pdf-builder.service";
 import { ReportsService } from "./services/reports.service.js";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
