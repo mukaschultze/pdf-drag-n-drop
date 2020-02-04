@@ -1,11 +1,11 @@
-<div class="row full-height">
+<div class="row full-height no-scroll">
 
     <!-- Left -->
-    <div class="column">
+    <div class="column scroll">
 
         <!-- <button mat-button (click)="hehe()">Click Me!</button> -->
 
-        <mat-list cdkDropList [cdkDropListData]="availableNodes" cdkDropListSortingDisabled *ngIf="false">
+        <mat-list cdkDropList [cdkDropListData]="availableNodes" cdkDropListSortingDisabled *ngIf="true">
             <mat-list-item cdkDrag [cdkDragData]="node" *ngFor="let node of availableNodes">
                 {{node.name}} ({{node.key}})
             </mat-list-item>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Right -->
-    <div class="column">
+    <div class="column no-scroll">
         <iframe [src]="pdfSrc" width="100%" height="100%"></iframe>
         <!-- <embed [src]="pdfSrc" type="application/pdf"> -->
         <!-- <object [data]="pdfSrc" width="100%" height="100%" type="application/pdf"></object> -->
