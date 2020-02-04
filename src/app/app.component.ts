@@ -19,7 +19,7 @@ import { ReportsService } from "./services/reports.service.js";
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-    public pdfSrc?: SafeResourceUrl;
+    public pdfSrc: SafeResourceUrl;
 
     private subscriptions = new Subscription();
 
@@ -28,7 +28,9 @@ export class AppComponent implements OnInit, OnDestroy {
         private nodes: NodesService,
         private reports: ReportsService,
         private sanitizer: DomSanitizer,
-    ) { }
+    ) {
+        this.pdfSrc = sanitizer.bypassSecurityTrustResourceUrl("about:blank");
+    }
 
     public get availableNodes() {
         return this.nodes.getAvailableNodes();
