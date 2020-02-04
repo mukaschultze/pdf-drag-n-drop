@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 pairwise(),
             ).subscribe(([prev, current]) => {
                 if (!!prev) {
-                    (URL || webkitURL).revokeObjectURL(prev);
+                    URL.revokeObjectURL(prev);
                 }
             }),
         );
@@ -92,7 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     // this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(dataURL);
 
                     const blob = new Blob([buffer], { type: "application/pdf" });
-                    const blobURL = (URL || webkitURL).createObjectURL(blob);
+                    const blobURL = URL.createObjectURL(blob);
 
                     observer.next(blobURL);
                     observer.complete();
