@@ -21,7 +21,8 @@
 
     <!-- Right -->
     <div class="column no-scroll">
-        <iframe [src]="pdfSrc" width="100%" height="100%"></iframe>
+        <!-- <iframe [src]="pdfSrc" width="100%" height="100%" fitContent></iframe> -->
+        <ng2-pdfjs-viewer [pdfSrc]="pdfSrc" *ngIf="pdfSrc"></ng2-pdfjs-viewer>
         <!-- <embed [src]="pdfSrc" type="application/pdf"> -->
         <!-- <object [data]="pdfSrc" width="100%" height="100%" type="application/pdf"></object> -->
 

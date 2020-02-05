@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { Observable, Observer, Subscription } from "rxjs";
-import { debounceTime, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
+import { debounceTime, mergeMap, shareReplay, switchMapTo, tap } from "rxjs/operators";
 import { payload } from "../payload.json";
 import { report } from "../report.json";
 import { NodesService } from "./services/nodes.service.js";
@@ -19,7 +18,7 @@ import { ReportsService } from "./services/reports.service.js";
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-    public pdfSrc: SafeResourceUrl;
+    public pdfSrc: Blob;
 
     private subscriptions = new Subscription();
 
@@ -27,9 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private pdfBuilder: PdfBuilder,
         private nodes: NodesService,
         private reports: ReportsService,
-        private sanitizer: DomSanitizer,
     ) {
-        this.pdfSrc = sanitizer.bypassSecurityTrustResourceUrl("about:blank");
+        // this.pdfSrc = sanitizer.bypassSecurityTrustResourceUrl("about:blank");
     }
 
     public get availableNodes() {
@@ -47,18 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
         );
 
         this.subscriptions.add(
-            latestBuiltPdf.pipe(
-                startWith(undefined),
-                pairwise(),
-            ).subscribe(([prev, current]) => {
-                if (!!prev) {
-                    URL.revokeObjectURL(prev);
-                }
-            }),
-        );
-
-        this.subscriptions.add(
-            latestBuiltPdf.subscribe((pdfBlob) => this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(pdfBlob)),
+            latestBuiltPdf.subscribe((pdfBlob) => this.pdfSrc = pdfBlob),
         );
     }
 
@@ -66,12 +53,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    public buildPdf(): Observable<string> {
+    public buildPdf(): Observable<Blob> {
         return this.pdfBuilder.outputTemplate.pipe(
             tap(() => console.time("Build PDF components")),
             mergeMap((template) => this.reports.generateReport(template, payload)),
             tap(() => console.timeEnd("Build PDF components")),
-            mergeMap((source) => new Observable((observer: Observer<string>) => {
+            mergeMap((source) => new Observable((observer: Observer<Blob>) => {
 
                 // console.log(JSON.stringify(source, null, 2));
 
@@ -92,9 +79,8 @@ export class AppComponent implements OnInit, OnDestroy {
                     // this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(dataURL);
 
                     const blob = new Blob([buffer], { type: "application/pdf" });
-                    const blobURL = URL.createObjectURL(blob);
 
-                    observer.next(blobURL);
+                    observer.next(blob);
                     observer.complete();
                 });
             })),
