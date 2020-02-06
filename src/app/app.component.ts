@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import { Observable, Observer, Subscription } from "rxjs";
-import { debounceTime, mergeMap, shareReplay, switchMapTo, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, Observer, Subscription } from "rxjs";
+import { debounceTime, filter, map, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
 import { payload } from "../payload.json";
 import { report } from "../report.json";
 import { NodesService } from "./services/nodes.service.js";
@@ -18,7 +19,9 @@ import { ReportsService } from "./services/reports.service.js";
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-    public pdfSrc: Blob;
+    public pdfSrc: Observable<Blob>;
+    public pdfSrcUrl: Observable<SafeResourceUrl>;
+    public viewer = new BehaviorSubject<"iframe" | "pdf-viewer" | "ng2-pdfjs-viewer">("iframe");
 
     private subscriptions = new Subscription();
 
@@ -26,9 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private pdfBuilder: PdfBuilder,
         private nodes: NodesService,
         private reports: ReportsService,
-    ) {
-        // this.pdfSrc = sanitizer.bypassSecurityTrustResourceUrl("about:blank");
-    }
+    ) { }
 
     public get availableNodes() {
         return this.nodes.getAvailableNodes();
@@ -38,15 +39,22 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.pdfBuilder.setCurrentPdf(report as any);
 
-        const latestBuiltPdf = this.pdfBuilder.outputTemplate.pipe(
+        this.pdfSrc = this.pdfBuilder.outputTemplate.pipe(
             debounceTime(150),
             switchMapTo(this.buildPdf()),
             shareReplay(1),
         );
 
-        this.subscriptions.add(
-            latestBuiltPdf.subscribe((pdfBlob) => this.pdfSrc = pdfBlob),
+        this.pdfSrcUrl = this.pdfSrc.pipe(
+            map((blob) => URL.createObjectURL(blob)),
+            startWith(undefined),
+            pairwise(),
+            tap(([prev, current]) => URL.revokeObjectURL(prev)), // Release the URL to prevent memory leaks
+            filter(([prev, current]) => !!current),
+            map(([prev, current]) => current),
+            shareReplay(1),
         );
+
     }
 
     public ngOnDestroy() {

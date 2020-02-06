@@ -1,11 +1,21 @@
+@import '~@angular/material/theming';
+
+.toolbar {
+    @include mat-elevation(6);
+
+    position: sticky;
+    height: 50px;
+    z-index: 100;
+
+    .fill-remaining-space {
+        flex: 1 1 auto;
+    }
+}
+
 .row {
     display: flex;
 }
 
 .column {
     flex: 50%;
-}
-
-.fill-remaining-space {
-    flex: 1 1 auto;
 }
