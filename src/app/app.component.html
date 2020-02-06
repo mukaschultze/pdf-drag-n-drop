@@ -17,10 +17,10 @@
     <!-- Left -->
     <section class="column scroll">
 
-        <mat-button-toggle-group>
-            <mat-button-toggle (click)="viewer.next('iframe')">iframe</mat-button-toggle>
-            <mat-button-toggle (click)="viewer.next('pdf-viewer')">pdf-viewer</mat-button-toggle>
-            <mat-button-toggle (click)="viewer.next('ng2-pdfjs-viewer')">ng2-pdfjs-viewer</mat-button-toggle>
+        <mat-button-toggle-group [value]="viewer|async" (change)="viewer.next($event.value)">
+            <mat-button-toggle value="iframe">iframe</mat-button-toggle>
+            <mat-button-toggle value="pdf-viewer">pdf-viewer</mat-button-toggle>
+            <mat-button-toggle value="ng2-pdfjs-viewer">ng2-pdfjs-viewer</mat-button-toggle>
         </mat-button-toggle-group>
 
         <mat-list cdkDropList [cdkDropListData]="availableNodes" cdkDropListSortingDisabled *ngIf="true">
