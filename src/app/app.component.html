@@ -4,11 +4,11 @@
         <span>PDF Builder</span>
         <span class="fill-remaining-space"></span>
 
-        <button (click)="log(this.pdfDefinition, 'pdfDefinition')" mat-icon-button matTooltip="Log Definition">
+        <button (click)="log(this.pdfDefinition, 'pdfDefinition')" mat-icon-button matTooltip="Log Definition" *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 
-        <button (click)="log(this.pdfTemplate, 'pdfTemplate')" mat-icon-button matTooltip="Log Template">
+        <button (click)="log(this.pdfTemplate, 'pdfTemplate')" mat-icon-button matTooltip="Log Template" *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 

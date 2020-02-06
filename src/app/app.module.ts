@@ -19,6 +19,7 @@ import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { DevDirective } from "./dev-mode.directive";
 import { PdfTreeComponent } from "./pdf-tree/pdf-tree.component";
 import { SafePipe } from "./safe.pipe";
 
@@ -27,6 +28,7 @@ import { SafePipe } from "./safe.pipe";
         AppComponent,
         PdfTreeComponent,
         SafePipe,
+        DevDirective,
     ],
     imports: [
         BrowserModule,
