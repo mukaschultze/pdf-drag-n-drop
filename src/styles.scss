@@ -1,7 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+// @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-.full-height {
-    height: calc(100% - 50px);
+@import '~@angular/material/theming';
+
+// **Be sure that you only ever include this mixin once!**
+@include mat-core();
+
+@mixin root-styles($theme) {
+
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, accent);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    .full-height {
+        height: calc(100% - 50px);
+        background: mat-color($background, background);
+    }
+
+    app-root {
+        background: mat-color($background, background);
+    }
+
 }
 
 html,
@@ -20,4 +42,12 @@ body {
 
 .scroll {
     overflow: auto;
+}
+
+@import 'theme-light';
+@include root-styles($theme);
+
+.dark-theme {
+    @import 'theme-dark';
+    @include root-styles($theme);
 }

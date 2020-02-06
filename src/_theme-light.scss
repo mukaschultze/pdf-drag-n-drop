@@ -1,0 +1,7 @@
+// Define the default theme (same as the example above).
+$primary: mat-palette($mat-indigo);
+$accent: mat-palette($mat-pink, A200, A100, A400);
+$theme: mat-light-theme($primary, $accent);
+
+// Include the default theme styles.
+@include angular-material-theme($theme);
