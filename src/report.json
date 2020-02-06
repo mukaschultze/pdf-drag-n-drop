@@ -3,6 +3,10 @@
         "key": "root",
         "elements": [
             {
+                "key": "meta",
+                "prop": "meta"
+            },
+            {
                 "key": "header",
                 "elements": [
                     {

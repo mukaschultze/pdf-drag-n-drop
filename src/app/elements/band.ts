@@ -32,6 +32,11 @@ export interface Image extends LeafElement {
     url?: string;
 }
 
+export interface DocumentMetadata extends LeafElement {
+    key: "meta";
+    prop: string;
+}
+
 export interface StaticText extends LeafElement {
     key: "text-static";
     text: string;

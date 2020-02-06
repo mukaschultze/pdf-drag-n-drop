@@ -64,7 +64,7 @@ export class ReportsService {
         }
 
         const tokens = prop.split(".");
-        return tokens.reduce((obj, key) => obj[key], payload);
+        return tokens.reduce((obj, key) => obj && obj[key], payload) || defaultValue;
     }
 
     @Mapper("root")
@@ -151,6 +151,19 @@ export class ReportsService {
         return this.imageCache.addImageToVFS(item.url).pipe(
             map((image) => ({ image })),
         );
+    }
+
+    @Mapper("meta")
+    private meta(item: elements.DocumentMetadata, payload: ReportPayload, { parent, pdf }: MapperContext): Observable<Content> {
+
+        if (!item.prop) {
+            console.warn("'meta' key has no 'prop' value, it will be ignored");
+            return of(undefined);
+        }
+
+        const propValue = this.getPayloadProperty(item.prop, payload, {});
+
+        return of({ info: propValue });
     }
 
 }
