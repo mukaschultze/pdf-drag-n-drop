@@ -11,6 +11,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTreeModule } from "@angular/material/tree";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -39,6 +40,7 @@ import { SafePipe } from "./safe.pipe";
 
         MatListModule,
         MatCheckboxModule,
+        MatTooltipModule,
         MatButtonModule,
         MatToolbarModule,
         MatButtonToggleModule,

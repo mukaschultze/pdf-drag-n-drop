@@ -4,11 +4,12 @@
         <span>PDF Builder</span>
         <span class="fill-remaining-space"></span>
 
-        <button mat-icon-button>
-            <mat-icon>get_app</mat-icon>
+        <button (click)="log(this.pdfDefinition, 'pdfDefinition')" mat-icon-button matTooltip="Log Definition">
+            <mat-icon>bug_report</mat-icon>
         </button>
-        <button mat-icon-button>
-            <mat-icon>local_printshop</mat-icon>
+
+        <button (click)="log(this.pdfTemplate, 'pdfTemplate')" mat-icon-button matTooltip="Log Template">
+            <mat-icon>bug_report</mat-icon>
         </button>
 
         <a mat-button href="https://github.com/mukaschultze/pdf-drag-n-drop" target="_blank">
@@ -50,15 +51,15 @@
         <mat-progress-bar mode="indeterminate" *ngIf="pdfBuilding|async"></mat-progress-bar>
 
         <ng-container *ngSwitchCase="'iframe'">
-            <iframe [src]="((pdfSrcUrl|async)||'about:blank')|safe" width="100%" height="100%" fitContent></iframe>
+            <iframe [src]="((pdfUrl|async)||'about:blank')|safe" width="100%" height="100%" fitContent></iframe>
         </ng-container>
 
         <ng-container *ngSwitchCase="'pdf-viewer'">
-            <pdf-viewer [src]="pdfSrcUrl|async" *ngIf="pdfSrcUrl|async"></pdf-viewer>
+            <pdf-viewer [src]="pdfUrl|async" *ngIf="pdfUrl|async"></pdf-viewer>
         </ng-container>
 
         <ng-container *ngSwitchCase="'ng2-pdfjs-viewer'">
-            <ng2-pdfjs-viewer [pdfSrc]="pdfSrc|async" *ngIf="pdfSrc|async"></ng2-pdfjs-viewer>
+            <ng2-pdfjs-viewer [pdfSrc]="pdfBlob|async" *ngIf="pdfBlob|async"></ng2-pdfjs-viewer>
         </ng-container>
 
     </section>
