@@ -27,11 +27,17 @@ export class AppComponent implements OnInit {
     public pdfUrl: Observable<SafeResourceUrl>;
     public viewer = new BehaviorSubject<"iframe" | "pdf-viewer" | "ng2-pdfjs-viewer">("iframe");
 
+    public theme = new BehaviorSubject<"dark-theme" | "light-theme">("dark-theme");
+
     constructor(
         private pdfBuilder: PdfBuilder,
         private nodes: NodesService,
         private reports: ReportsService,
-    ) { }
+    ) {
+        this.theme.next(localStorage.getItem("app-theme") as any || this.theme.value);
+        this.theme.subscribe((theme) => document.getElementsByTagName("body").item(0).className = theme);
+        this.theme.subscribe((theme) => localStorage.setItem("app-theme", theme));
+    }
 
     public get availableNodes() {
         return this.nodes.getAvailableNodes();
@@ -93,6 +99,12 @@ export class AppComponent implements OnInit {
                 this.pdfBuilding.next(false);
             });
         });
+    }
+
+    public changeTheme() {
+        this.theme.next(
+            this.theme.value === "dark-theme" ? "light-theme" : "dark-theme",
+        );
     }
 
     public log(obs: Observable<any>, prefix?: string) {

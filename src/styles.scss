@@ -15,12 +15,7 @@
     $foreground: map-get($theme, foreground);
     $background: map-get($theme, background);
 
-    .full-height {
-        height: calc(100% - 50px);
-        background: mat-color($background, background);
-    }
-
-    app-root {
+    app-root>* {
         background: mat-color($background, background);
     }
 
@@ -36,6 +31,10 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.full-height {
+    height: calc(100% - 50px);
+}
+
 .no-scroll {
     overflow: hidden;
 }
@@ -44,8 +43,10 @@ body {
     overflow: auto;
 }
 
-@import 'theme-light';
-@include root-styles($theme);
+.light-theme {
+    @import 'theme-light';
+    @include root-styles($theme);
+}
 
 .dark-theme {
     @import 'theme-dark';

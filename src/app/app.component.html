@@ -12,6 +12,10 @@
             <mat-icon>bug_report</mat-icon>
         </button>
 
+        <button (click)="changeTheme()" mat-icon-button matTooltip="Change Theme">
+            <mat-icon>{{(theme|async) === 'dark-theme' ? 'brightness_4' : 'brightness_5'}}</mat-icon>
+        </button>
+
         <a mat-button href="https://github.com/mukaschultze/pdf-drag-n-drop" target="_blank">
             <img src="../assets/github-circle-white-transparent.svg" class="logo">
             GitHub
