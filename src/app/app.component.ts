@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { SafeResourceUrl } from "@angular/platform-browser";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import { BehaviorSubject, Observable, Observer, Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Observer } from "rxjs";
 import { debounceTime, filter, map, mergeMap, pairwise, shareReplay, startWith, switchMapTo, tap } from "rxjs/operators";
 import { payload } from "../payload.json";
 import { report } from "../report.json";
@@ -17,13 +17,12 @@ import { ReportsService } from "./services/reports.service.js";
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.scss"],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
     public pdfSrc: Observable<Blob>;
+    public pdfBuilding = new BehaviorSubject<boolean>(true);
     public pdfSrcUrl: Observable<SafeResourceUrl>;
     public viewer = new BehaviorSubject<"iframe" | "pdf-viewer" | "ng2-pdfjs-viewer">("iframe");
-
-    private subscriptions = new Subscription();
 
     constructor(
         private pdfBuilder: PdfBuilder,
@@ -57,12 +56,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     }
 
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-    }
-
     public buildPdf(): Observable<Blob> {
         return this.pdfBuilder.outputTemplate.pipe(
+            tap(() => this.pdfBuilding.next(true)),
             tap(() => console.time("Build PDF components")),
             mergeMap((template) => this.reports.generateReport(template, payload)),
             tap(() => console.timeEnd("Build PDF components")),
@@ -90,6 +86,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
                     observer.next(blob);
                     observer.complete();
+
+                    this.pdfBuilding.next(false);
                 });
             })),
         );
