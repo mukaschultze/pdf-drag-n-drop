@@ -10,6 +10,7 @@ import { RootPDF } from "./elements/band.js";
 import { NodesService } from "./services/nodes.service.js";
 import { PdfBuilder } from "./services/pdf-builder.service";
 import { ReportsService } from "./services/reports.service.js";
+import { localStorageSubject } from "./util.js";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
 
@@ -25,18 +26,16 @@ export class AppComponent implements OnInit {
     public pdfBlob: Observable<Blob>;
     public pdfBuilding = new BehaviorSubject<boolean>(true);
     public pdfUrl: Observable<SafeResourceUrl>;
-    public viewer = new BehaviorSubject<"iframe" | "pdf-viewer" | "ng2-pdfjs-viewer">("iframe");
 
-    public theme = new BehaviorSubject<"dark-theme" | "light-theme">("dark-theme");
+    public viewer = localStorageSubject<"iframe" | "pdf-viewer" | "ng2-pdfjs-viewer">("pdf-viewer", "iframe");
+    public theme = localStorageSubject<"dark-theme" | "light-theme">("app-theme", "dark-theme");
 
     constructor(
         private pdfBuilder: PdfBuilder,
         private nodes: NodesService,
         private reports: ReportsService,
     ) {
-        this.theme.next(localStorage.getItem("app-theme") as any || this.theme.value);
         this.theme.subscribe((theme) => document.getElementsByTagName("body").item(0).className = theme);
-        this.theme.subscribe((theme) => localStorage.setItem("app-theme", theme));
     }
 
     public get availableNodes() {
