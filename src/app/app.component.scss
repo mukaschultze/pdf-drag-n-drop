@@ -25,3 +25,43 @@
 .column {
     flex: 50%;
 }
+
+.expand {
+    display: flex;
+    flex-direction: column;
+
+    >* {
+        flex-grow: 1;
+    }
+}
+
+.justified {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .end {
+        justify-content: end;
+    }
+
+    .start {
+        justify-content: start;
+    }
+
+    .center {
+        justify-content: center;
+    }
+}
+
+.viewer-toggle {
+    text-align: center;
+
+    * {
+        margin: 0 auto;
+        display: inline-block;
+    }
+}
+
+.content {
+    padding: 20px 50px 50px 20px;
+}

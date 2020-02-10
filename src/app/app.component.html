@@ -27,26 +27,22 @@
 <div class="full-height row no-scroll">
 
     <!-- Left -->
-    <section class="column scroll">
+    <section class="column content scroll expand">
+        <div class="justified">
 
-        <mat-button-toggle-group [value]="viewer|async" (change)="viewer.next($event.value)">
-            <mat-button-toggle value="iframe">iframe</mat-button-toggle>
-            <mat-button-toggle value="pdf-viewer">pdf-viewer</mat-button-toggle>
-            <mat-button-toggle value="ng2-pdfjs-viewer">ng2-pdfjs-viewer</mat-button-toggle>
-        </mat-button-toggle-group>
+            <div class="start">
+                <pdf-tree></pdf-tree>
+            </div>
 
-        <mat-list cdkDropList [cdkDropListData]="availableNodes" cdkDropListSortingDisabled *ngIf="true">
-            <mat-list-item cdkDrag [cdkDragData]="node" *ngFor="let node of availableNodes">
-                {{node.name}} ({{node.key}})
-            </mat-list-item>
-        </mat-list>
+            <div class="end viewer-toggle">
+                <mat-button-toggle-group [value]="viewer|async" (change)="viewer.next($event.value)">
+                    <mat-button-toggle value="iframe">iframe</mat-button-toggle>
+                    <mat-button-toggle value="pdf-viewer">pdf-viewer</mat-button-toggle>
+                    <mat-button-toggle value="ng2-pdfjs-viewer">ng2-pdfjs-viewer</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
 
-        <pdf-tree></pdf-tree>
-
-        <div>
-            <!-- <pre>{{docDefinition.build() | async | json}}</pre> -->
         </div>
-
     </section>
 
     <!-- Right -->
