@@ -1,6 +1,6 @@
 // Define an alternate dark theme.
-$primary: mat-palette($mat-blue-grey);
-$accent: mat-palette($mat-amber, A200, A100, A400);
+$primary: mat-palette($mat-blue, 900);
+$accent: mat-palette($mat-blue, A100, 100, A4200);
 $warn: mat-palette($mat-deep-orange);
 $theme: mat-dark-theme($primary, $accent, $warn);
 
