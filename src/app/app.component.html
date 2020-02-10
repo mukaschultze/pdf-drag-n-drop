@@ -4,15 +4,15 @@
         <span>PDF Builder</span>
         <span class="fill-remaining-space"></span>
 
-        <button (click)="log(this.pdfDefinition, 'pdfDefinition')" mat-icon-button matTooltip="Log Definition" *devMode>
+        <button mat-icon-button matTooltip="Log Definition" (click)="log(this.pdfDefinition, 'pdfDefinition')" *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 
-        <button (click)="log(this.pdfTemplate, 'pdfTemplate')" mat-icon-button matTooltip="Log Template" *devMode>
+        <button mat-icon-button matTooltip="Log Template" (click)="log(this.pdfTemplate, 'pdfTemplate')" *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 
-        <button (click)="changeTheme()" mat-icon-button matTooltip="Change Theme">
+        <button mat-icon-button matTooltip="Change Theme" (click)="changeTheme()">
             <mat-icon>{{(theme|async) === 'dark-theme' ? 'brightness_4' : 'brightness_5'}}</mat-icon>
         </button>
 
