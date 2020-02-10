@@ -3,11 +3,10 @@
          [class.drop-below]="dragNodeExpandOverNode === node && dragNodeExpandOverArea === 'below'"
          [class.drop-center]="dragNodeExpandOverNode === node && dragNodeExpandOverArea === 'center'"
 
-         draggable="true"
+         [draggable]="true"
          (dragstart)="handleDragStart($event, node);"
          (dragover)="handleDragOver($event, node);"
-         (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);"
-         (change)="todoItemSelectionToggle(node)">
+         (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
         {{node.item.key}}
     </div>
 
