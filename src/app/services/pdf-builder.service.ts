@@ -3,169 +3,97 @@ import { BehaviorSubject } from "rxjs";
 import { debounceTime, map, shareReplay } from "rxjs/operators";
 import { Element, RootPDF } from "../elements/band";
 
-export interface Node {
-    elements: Node[];
-    item: Element;
-}
-
-export interface FlatNode {
-    item: Element;
-    level: number;
-    expandable: boolean;
-}
-
 @Injectable({ providedIn: "root" })
 export class PdfBuilder {
 
-    public dataChange = new BehaviorSubject<Node[]>([]);
+    public get data(): Element[] { return this.dataChange.value; }
 
-    public outputTemplate = this.dataChange.pipe(
+    public readonly dataChange = new BehaviorSubject<Element[]>([]);
+
+    public readonly outputTemplate = this.dataChange.pipe(
         debounceTime(5),
-        map((arr) => arr.map((n) => this.node2Element(n))),
         map((arr) => ({ key: "root", elements: arr } as RootPDF)),
         shareReplay(1),
     );
 
-    get data(): Node[] { return this.dataChange.value; }
-
     public setCurrentPdf(pdf: Element) {
-        const data = this.element2Node(pdf);
-        this.dataChange.next(data.elements);
+        this.dataChange.next(pdf.elements);
     }
 
-    public element2Node(item: Element): Node {
-        return {
-            item,
-            elements: (item.elements || []).map((c) => this.element2Node(c)),
-        };
-    }
-
-    public node2Element(node: Node): Element {
-        if (!node) {
-            return undefined;
-        }
-
-        if (node.item.key === "content") {
-            console.log(node);
-        }
-
-        return {
-            ...node.item,
-            elements: (node.elements || []).map((c) => this.node2Element(c)),
-        };
-    }
-
-    /** Add an item to to-do list */
-    public insertItem(parent: Node, item: Element): Node {
+    public insertItem(parent: Element, inserting: Element): Element {
         if (!parent.elements) {
             parent.elements = [];
         }
-        const newItem = this.element2Node(item);
-        parent.elements.push(newItem);
+        parent.elements.push(inserting);
         this.dataChange.next(this.data);
-        return newItem;
+        return inserting;
     }
 
-    public insertItemAbove(node: Node, item: Element): Node {
-        const parentNode = this.getParentFromNodes(node);
-        const newItem = this.element2Node(item);
-        if (parentNode != null) {
-            parentNode.elements.splice(parentNode.elements.indexOf(node), 0, newItem);
-        } else {
-            this.data.splice(this.data.indexOf(node), 0, newItem);
+    public insertItemAsSibling(sibling: Element, inserting: Element, where: "above" | "below"): Element {
+        const parent = this.getParent(sibling);
+
+        if (parent == null) {
+            console.warn(`Sibling does not have a parent, cannot insert ${where}`);
+            return null;
         }
+
+        const siblingIndex = parent.elements.indexOf(sibling);
+        const insertIndex = siblingIndex + (where === "below" ? 1 : 0);
+        parent.elements.splice(insertIndex, 0, inserting);
         this.dataChange.next(this.data);
-        return newItem;
+        return inserting;
     }
 
-    public insertItemBelow(node: Node, item: Element): Node {
-        const parentNode = this.getParentFromNodes(node);
-        const newItem = this.element2Node(item);
-        if (parentNode != null) {
-            parentNode.elements.splice(parentNode.elements.indexOf(node) + 1, 0, newItem);
-        } else {
-            this.data.splice(this.data.indexOf(node) + 1, 0, newItem);
+    public getParent(searching: Element, root?: Element): Element {
+
+        if (!root) {
+            root = { key: "root", elements: this.data };
         }
-        this.dataChange.next(this.data);
-        return newItem;
-    }
 
-    public getParentFromNodes(node: Node): Node {
-        for (const currentRoot of this.data) {
-            const parent = this.getParent(currentRoot, node);
-            if (parent != null) {
-                return parent;
-            }
+        if (!root.elements || root.elements.length === 0) {
+            return undefined;
         }
-        return null;
+
+        return root.elements.find((child) => child === searching) ?
+            root :
+            root.elements
+                .map((child) => this.getParent(searching, child))
+                .find((parent) => !!parent);
+
     }
 
-    public getParent(currentRoot: Node, node: Node): Node {
-        if (currentRoot.elements && currentRoot.elements.length > 0) {
-            for (const child of currentRoot.elements) {
-                if (child === node) {
-                    return currentRoot;
-                } else if (child.elements && child.elements.length > 0) {
-                    const parent = this.getParent(child, node);
-                    if (parent != null) {
-                        return parent;
-                    }
-                }
-            }
+    public deleteItem(deleting: Element, nodes?: Element[]): boolean {
+
+        if (!nodes) {
+            nodes = this.data;
         }
-        return null;
-    }
 
-    public updateItem(node: Node, item: Element) {
-        node.item = item;
-        this.dataChange.next(this.data);
-    }
+        const index = nodes.indexOf(deleting);
 
-    public deleteItem(node: Node) {
-        this.deleteNode(this.data, node);
-        this.dataChange.next(this.data);
-    }
-
-    public copyPasteItem(from: Node, to: Node): Node {
-        const newItem = this.insertItem(to, from.item);
-        if (from.elements) {
-            from.elements.forEach((child) => {
-                this.copyPasteItem(child, newItem);
-            });
-        }
-        return newItem;
-    }
-
-    public copyPasteItemAbove(from: Node, to: Node): Node {
-        const newItem = this.insertItemAbove(to, from.item);
-        if (from.elements) {
-            from.elements.forEach((child) => {
-                this.copyPasteItem(child, newItem);
-            });
-        }
-        return newItem;
-    }
-
-    public copyPasteItemBelow(from: Node, to: Node): Node {
-        const newItem = this.insertItemBelow(to, from.item);
-        if (from.elements) {
-            from.elements.forEach((child) => {
-                this.copyPasteItem(child, newItem);
-            });
-        }
-        return newItem;
-    }
-
-    public deleteNode(nodes: Node[], nodeToDelete: Node) {
-        const index = nodes.indexOf(nodeToDelete, 0);
-        if (index > -1) {
+        if (index !== -1) {
             nodes.splice(index, 1);
+            this.dataChange.next(this.data);
+            return true;
         } else {
-            nodes.forEach((node) => {
-                if (node.elements && node.elements.length > 0) {
-                    this.deleteNode(node.elements, nodeToDelete);
-                }
-            });
+            return nodes
+                .map((node) => node.elements && node.elements.length > 0 ?
+                    this.deleteItem(deleting, node.elements) :
+                    false)
+                .some((result) => !!result);
         }
+
     }
+
+    public moveItem(moving: Element, newParent: Element): Element {
+        return this.deleteItem(moving) ?
+            this.insertItem(newParent, moving) :
+            null;
+    }
+
+    public moveItemSibling(moving: Element, newSibling: Element, where: "above" | "below"): Element {
+        return this.deleteItem(moving) ?
+            this.insertItemAsSibling(newSibling, moving, where) :
+            null;
+    }
+
 }

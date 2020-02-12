@@ -1,27 +1,26 @@
 <ng-template let-node="node" #nodeTemplate>
-    <div [class.drop-above]="dragNodeExpandOverNode === node && dragNodeExpandOverArea === 'above'"
-         [class.drop-below]="dragNodeExpandOverNode === node && dragNodeExpandOverArea === 'below'"
-         [class.drop-center]="dragNodeExpandOverNode === node && dragNodeExpandOverArea === 'center'"
-
-         [draggable]="true"
+    <div [draggable]="true"
          (dragstart)="handleDragStart($event, node);"
          (dragover)="handleDragOver($event, node);"
-         (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
-        {{node.item.key}}
+         (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);"
+
+         [class.drop-above]="dragContext?.overNode === node && dragContext?.area === 'above'"
+         [class.drop-below]="dragContext?.overNode === node && dragContext?.area === 'below'"
+         [class.drop-center]="dragContext?.overNode === node && dragContext?.area === 'center'">
+        {{node.key}}
     </div>
 
     <button mat-icon-button
-            [matMenuTriggerFor]="addNodeMenu"
-            [matMenuTriggerData]="{addTo: node}">
-        <mat-icon>add</mat-icon>
+            [matMenuTriggerFor]="editMenu"
+            [matMenuTriggerData]="{node: node}">
+        <mat-icon>edit</mat-icon>
     </button>
-
 </ng-template>
 
-<mat-menu #addNodeMenu="matMenu">
-    <ng-template matMenuContent let-addTo="addTo">
-        <button mat-menu-item (click)="addNewItem(addTo)">Settings</button>
-        <button mat-menu-item (click)="addNewItem(addTo)">Help</button>
+<mat-menu #editMenu="matMenu">
+    <ng-template matMenuContent let-node>
+        <button mat-menu-item (click)="addNewItem(node)">Settings</button>
+        <button mat-menu-item (click)="addNewItem(node)">Help</button>
     </ng-template>
 </mat-menu>
 
