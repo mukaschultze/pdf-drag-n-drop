@@ -4,11 +4,13 @@
         <span>PDF Builder</span>
         <span class="fill-remaining-space"></span>
 
-        <button mat-icon-button matTooltip="Log Definition" (click)="log(this.pdfDefinition, 'pdfDefinition')" *devMode>
+        <button mat-icon-button matTooltip="Log Definition" (click)="log(this.pdfDefinition, 'pdfDefinition')"
+                *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 
-        <button mat-icon-button matTooltip="Log Template" (click)="log(this.pdfTemplate, 'pdfTemplate')" *devMode>
+        <button mat-icon-button matTooltip="Log Template" (click)="log(this.pdfTemplate, 'pdfTemplate')"
+                *devMode>
             <mat-icon>bug_report</mat-icon>
         </button>
 
@@ -24,46 +26,53 @@
     </mat-toolbar>
 </section>
 
-<div class="full-height row no-scroll">
+<mat-drawer-container class="full-height">
 
-    <!-- Left -->
-    <section class="column content scroll expand">
-        <div class="justified">
+    <mat-drawer mode="side" opened>
+        Drawer content
+    </mat-drawer>
 
-            <div class="start">
-                <pdf-tree></pdf-tree>
+    <mat-drawer-content class="row no-scroll">
+
+        <!-- Left -->
+        <section class="column content scroll expand">
+            <div class="justified">
+
+                <div class="start">
+                    <pdf-tree></pdf-tree>
+                </div>
+
+                <div class="end viewer-toggle">
+                    <mat-button-toggle-group [value]="viewer|async" (change)="viewer.next($event.value)">
+                        <mat-button-toggle value="iframe">iframe</mat-button-toggle>
+                        <mat-button-toggle value="pdf-viewer">pdf-viewer</mat-button-toggle>
+                        <mat-button-toggle value="ng2-pdfjs-viewer">ng2-pdfjs-viewer</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
             </div>
+        </section>
 
-            <div class="end viewer-toggle">
-                <mat-button-toggle-group [value]="viewer|async" (change)="viewer.next($event.value)">
-                    <mat-button-toggle value="iframe">iframe</mat-button-toggle>
-                    <mat-button-toggle value="pdf-viewer">pdf-viewer</mat-button-toggle>
-                    <mat-button-toggle value="ng2-pdfjs-viewer">ng2-pdfjs-viewer</mat-button-toggle>
-                </mat-button-toggle-group>
-            </div>
+        <!-- Right -->
+        <section class="column no-scroll" [ngSwitch]="viewer|async">
 
-        </div>
-    </section>
+            <mat-progress-bar mode="indeterminate" *ngIf="pdfBuilding|async"></mat-progress-bar>
 
-    <!-- Right -->
-    <section class="column no-scroll" [ngSwitch]="viewer|async">
+            <ng-container *ngSwitchCase="'iframe'">
+                <iframe [src]="((pdfUrl|async)||'about:blank')|safe" width="100%" height="100%" fitContent></iframe>
+            </ng-container>
 
-        <mat-progress-bar mode="indeterminate" *ngIf="pdfBuilding|async"></mat-progress-bar>
+            <ng-container *ngSwitchCase="'pdf-viewer'">
+                <pdf-viewer [src]="pdfUrl|async" *ngIf="pdfUrl|async"></pdf-viewer>
+            </ng-container>
 
-        <ng-container *ngSwitchCase="'iframe'">
-            <iframe [src]="((pdfUrl|async)||'about:blank')|safe" width="100%" height="100%" fitContent></iframe>
-        </ng-container>
+            <ng-container *ngSwitchCase="'ng2-pdfjs-viewer'">
+                <ng2-pdfjs-viewer [pdfSrc]="pdfBlob|async" *ngIf="pdfBlob|async"></ng2-pdfjs-viewer>
+            </ng-container>
 
-        <ng-container *ngSwitchCase="'pdf-viewer'">
-            <pdf-viewer [src]="pdfUrl|async" *ngIf="pdfUrl|async"></pdf-viewer>
-        </ng-container>
+        </section>
 
-        <ng-container *ngSwitchCase="'ng2-pdfjs-viewer'">
-            <ng2-pdfjs-viewer [pdfSrc]="pdfBlob|async" *ngIf="pdfBlob|async"></ng2-pdfjs-viewer>
-        </ng-container>
-
-    </section>
-
-</div>
+    </mat-drawer-content>
+</mat-drawer-container>
 
 <!-- <router-outlet></router-outlet> -->
