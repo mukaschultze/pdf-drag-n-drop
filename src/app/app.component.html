@@ -4,16 +4,6 @@
         <span>PDF Builder</span>
         <span class="fill-remaining-space"></span>
 
-        <button mat-icon-button matTooltip="Log Definition" (click)="log(this.pdfDefinition, 'pdfDefinition')"
-                *devMode>
-            <mat-icon>bug_report</mat-icon>
-        </button>
-
-        <button mat-icon-button matTooltip="Log Template" (click)="log(this.pdfTemplate, 'pdfTemplate')"
-                *devMode>
-            <mat-icon>bug_report</mat-icon>
-        </button>
-
         <button mat-icon-button matTooltip="Change Theme" (click)="changeTheme()">
             <mat-icon>{{(theme|async) === 'dark-theme' ? 'brightness_4' : 'brightness_5'}}</mat-icon>
         </button>
@@ -23,13 +13,32 @@
             GitHub
         </a>
 
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="debugMenu" *devMode>
+                <mat-icon>bug_report</mat-icon>
+                <span>Debug</span>
+            </button>
+        </mat-menu>
+
+        <mat-menu #debugMenu="matMenu">
+            <button mat-menu-item (click)="log(this.pdfDefinition, 'pdfDefinition')">Log Definition</button>
+            <button mat-menu-item (click)="log(this.pdfTemplate, 'pdfTemplate')">Log Template</button>
+        </mat-menu>
+
     </mat-toolbar>
 </section>
 
 <mat-drawer-container class="full-height">
 
     <mat-drawer mode="side" opened>
-        Drawer content
+        <mat-action-list dense>
+            <button mat-list-item> Save </button>
+            <button mat-list-item> Undo </button>
+        </mat-action-list>
     </mat-drawer>
 
     <mat-drawer-content class="row no-scroll">
