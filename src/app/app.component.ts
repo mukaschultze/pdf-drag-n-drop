@@ -33,7 +33,15 @@ export class AppComponent implements OnInit {
         private pdfBuilder: PdfBuilder,
         private reports: ReportsService,
     ) {
-        this.theme.subscribe((theme) => document.getElementsByTagName("body").item(0).className = theme);
+        this.theme.pipe(
+            startWith(undefined),
+            pairwise(),
+        ).subscribe(([oldTheme, newTheme]) => {
+            const body = document.getElementsByTagName("body").item(0);
+
+            body.classList.remove(oldTheme);
+            body.classList.add(newTheme);
+        });
     }
 
     public ngOnInit() {
