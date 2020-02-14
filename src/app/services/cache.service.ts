@@ -13,7 +13,7 @@ export class CacheService {
 
     constructor() {
         this.cacheStorage = from(caches.open(this.cacheKey)).pipe(
-            tap(() => this.deleteCaches("older").subscribe()),
+            tap(() => this.deleteCaches("old").subscribe()),
             take(1),
             shareReplay(1),
         );
@@ -49,7 +49,7 @@ export class CacheService {
         );
     }
 
-    public deleteCaches(mode: "all" | "older"): Observable<{ key: string, deleted: boolean }[]> {
+    public deleteCaches(mode: "all" | "old"): Observable<{ key: string, deleted: boolean }[]> {
 
         const deleteCaches = from(caches.keys()).pipe(
             switchMap((keys) => forkJoin(
