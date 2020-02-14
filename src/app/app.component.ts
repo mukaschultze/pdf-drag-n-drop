@@ -6,12 +6,12 @@ import { BehaviorSubject, Observable, Observer } from "rxjs";
 import { debounceTime, filter, map, mergeMap, pairwise, shareReplay, startWith, switchMap, take, tap } from "rxjs/operators";
 import { payload } from "../payload.json";
 import { report } from "../report.json";
-import { RootPDF } from "./elements/band.js";
-import { CacheService } from "./services/cache.service.js";
-import { ImageCacheService } from "./services/image-cache.service.js";
+import { RootPDF } from "./elements/band";
+import { CacheService } from "./services/cache.service";
+import { ImageCacheService } from "./services/image-cache.service";
 import { PdfBuilder } from "./services/pdf-builder.service";
-import { ReportsService } from "./services/reports.service.js";
-import { localStorageSubject } from "./util.js";
+import { ReportsService } from "./services/reports.service";
+import { localStorageSubject } from "./util";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
 
