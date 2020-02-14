@@ -7,6 +7,8 @@ import { debounceTime, filter, map, mergeMap, pairwise, shareReplay, startWith, 
 import { payload } from "../payload.json";
 import { report } from "../report.json";
 import { RootPDF } from "./elements/band.js";
+import { CacheService } from "./services/cache.service.js";
+import { ImageCacheService } from "./services/image-cache.service.js";
 import { PdfBuilder } from "./services/pdf-builder.service";
 import { ReportsService } from "./services/reports.service.js";
 import { localStorageSubject } from "./util.js";
@@ -32,6 +34,8 @@ export class AppComponent implements OnInit {
     constructor(
         private pdfBuilder: PdfBuilder,
         private reports: ReportsService,
+        private cache: CacheService,
+        private imageCache: ImageCacheService,
     ) {
         this.theme.pipe(
             startWith(undefined),
@@ -112,5 +116,14 @@ export class AppComponent implements OnInit {
         obs.pipe(
             take(1),
         ).subscribe((val) => console.log(prefix || val, prefix && val));
+    }
+
+    public rebuildPdf() {
+        this.pdfBuilder.rebuildPdf();
+    }
+
+    public clearCaches() {
+        this.imageCache.clearCache();
+        this.cache.deleteCaches("all").subscribe((c) => console.log("Caches cleared", c));
     }
 }

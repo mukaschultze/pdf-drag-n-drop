@@ -2,6 +2,23 @@
     <mat-toolbar color="primary" class="toolbar">
 
         <span>PDF Builder</span>
+
+        <button mat-button [matMenuTriggerFor]="editMenu">
+            <span>Edit</span>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="viewMenu">
+            <span>View</span>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="advancedMenu">
+            <span>Advanced</span>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="helpMenu">
+            <span>Help</span>
+        </button>
+
         <span class="fill-remaining-space"></span>
 
         <button mat-icon-button matTooltip="Change Theme" (click)="changeTheme()">
@@ -16,6 +33,36 @@
         <button mat-icon-button [matMenuTriggerFor]="moreMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
+
+        <mat-menu #editMenu="matMenu">
+            <button mat-menu-item>
+                <mat-icon>undo</mat-icon>
+                <span>Undo</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>redo</mat-icon>
+                <span>Redo</span>
+            </button>
+        </mat-menu>
+
+        <mat-menu #viewMenu="matMenu">
+            <button mat-menu-item>Nothing Here</button>
+        </mat-menu>
+
+        <mat-menu #advancedMenu="matMenu">
+            <button mat-menu-item (click)="rebuildPdf()">
+                <mat-icon>build</mat-icon>
+                <span>Rebuild PDF</span>
+            </button>
+            <button mat-menu-item (click)="clearCaches()">
+                <mat-icon>cached</mat-icon>
+                <span>Clear Caches</span>
+            </button>
+        </mat-menu>
+
+        <mat-menu #helpMenu="matMenu">
+            <button mat-menu-item>Nothing Here</button>
+        </mat-menu>
 
         <mat-menu #moreMenu="matMenu">
             <button mat-menu-item [matMenuTriggerFor]="debugMenu" *devMode>
@@ -35,10 +82,11 @@
 <mat-drawer-container class="full-height">
 
     <mat-drawer mode="side" opened>
-        <mat-action-list dense>
+        <!-- <mat-action-list dense>
             <button mat-list-item> Save </button>
             <button mat-list-item> Undo </button>
-        </mat-action-list>
+            <button mat-list-item (click)="clearCaches()"> Clear Caches </button>
+        </mat-action-list> -->
     </mat-drawer>
 
     <mat-drawer-content class="row no-scroll">

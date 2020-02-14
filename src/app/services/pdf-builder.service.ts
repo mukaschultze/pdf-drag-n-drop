@@ -20,6 +20,10 @@ export class PdfBuilder {
         this.dataChange.next(pdf.elements);
     }
 
+    public rebuildPdf() {
+        this.dataChange.next(this.data);
+    }
+
     public insertItem(parent: Element, inserting: Element): Element {
         if (!parent.elements) {
             parent.elements = [];
