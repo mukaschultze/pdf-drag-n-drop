@@ -28,6 +28,7 @@ export class PdfBuilder {
         if (!parent.elements) {
             parent.elements = [];
         }
+
         parent.elements.push(inserting);
         this.dataChange.next(this.data);
         return inserting;
@@ -36,7 +37,7 @@ export class PdfBuilder {
     public insertItemAsSibling(sibling: Element, inserting: Element, where: "above" | "below"): Element {
         const parent = this.getParent(sibling);
 
-        if (parent == null) {
+        if (!parent) {
             console.warn(`Sibling does not have a parent, cannot insert ${where}`);
             return null;
         }
