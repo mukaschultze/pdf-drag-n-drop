@@ -19,7 +19,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
-import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { DevDirective } from "./dev-mode.directive";
 import { PdfTreeComponent } from "./pdf-tree/pdf-tree.component";
@@ -34,7 +33,6 @@ import { SafePipe } from "./safe.pipe";
     ],
     imports: [
         BrowserModule,
-        AppRoutingModule,
         FormsModule,
 
         DragDropModule,
@@ -59,7 +57,6 @@ import { SafePipe } from "./safe.pipe";
 
         BrowserAnimationsModule,
     ],
-    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule { }
