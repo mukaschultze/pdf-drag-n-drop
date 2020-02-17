@@ -33,7 +33,7 @@ export class ImageCacheService {
             return this.cache[url];
         }
 
-        const blob$ = /^https?:\\\\/gi.test(url) ?
+        const blob$ = /^https?:\/\//gi.test(url) ?
             this.cacheService.getData(url).pipe(switchMap((r) => r.blob())) :
             this.http.get(url, { responseType: "blob" });
 
