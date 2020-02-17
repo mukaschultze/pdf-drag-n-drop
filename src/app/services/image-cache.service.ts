@@ -1,7 +1,8 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import { Observable, Observer } from "rxjs";
-import { finalize, map, mapTo, mergeMap, shareReplay, switchMap, tap } from "rxjs/operators";
+import { finalize, map, mapTo, shareReplay, switchMap, tap } from "rxjs/operators";
 import { CacheService } from "./cache.service";
 
 @Injectable({ providedIn: "root" })
@@ -12,6 +13,7 @@ export class ImageCacheService {
     private cache: { [url: string]: Observable<string> } = {};
 
     constructor(
+        private http: HttpClient,
         private cacheService: CacheService,
     ) { }
 
@@ -31,8 +33,11 @@ export class ImageCacheService {
             return this.cache[url];
         }
 
-        const obs = this.cacheService.getData(url).pipe(
-            mergeMap((response) => response.blob()),
+        const blob$ = /^https?:\\\\/gi.test(url) ?
+            this.cacheService.getData(url).pipe(switchMap((r) => r.blob())) :
+            this.http.get(url, { responseType: "blob" });
+
+        const obs = blob$.pipe(
             map((blob) => URL.createObjectURL(blob)),
             switchMap((blobUrl) => new Observable((observer: Observer<string>) => {
 

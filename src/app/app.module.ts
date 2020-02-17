@@ -1,4 +1,5 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -34,6 +35,8 @@ import { SafePipe } from "./safe.pipe";
     imports: [
         BrowserModule,
         FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
 
         DragDropModule,
 
@@ -54,8 +57,6 @@ import { SafePipe } from "./safe.pipe";
         MatTreeModule,
         MatIconModule,
         MatGridListModule,
-
-        BrowserAnimationsModule,
     ],
     bootstrap: [AppComponent],
 })
