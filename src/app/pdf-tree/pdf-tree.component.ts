@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild } from "@angular/core";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { Element } from "../elements/band";
 import { PdfBuilder } from "../services/pdf-builder.service";
+import { UndoService } from "../services/undo.service";
 
 const EXPAND_HOLD_MS = 300;
 
@@ -36,6 +37,7 @@ export class PdfTreeComponent {
     private emptyItem: ElementRef;
 
     constructor(
+        private undo: UndoService,
         private database: PdfBuilder,
     ) {
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
@@ -119,9 +121,11 @@ export class PdfTreeComponent {
             switch (this.dragContext.area) {
                 case "above":
                 case "below":
+                    this.undo.recordChanges("Moved item");
                     moved = this.database.moveItemSibling(this.dragContext.dragNode, node, this.dragContext.area as any);
                     break;
                 case "center":
+                    this.undo.recordChanges("Moved item");
                     moved = this.database.moveItem(this.dragContext.dragNode, node);
                     break;
             }

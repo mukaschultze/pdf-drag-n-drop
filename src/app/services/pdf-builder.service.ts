@@ -11,7 +11,7 @@ export class PdfBuilder {
     public readonly dataChange = new BehaviorSubject<Element[]>([]);
 
     public readonly outputTemplate = this.dataChange.pipe(
-        debounceTime(5),
+        debounceTime(2),
         map((arr) => ({ key: "root", elements: arr } as RootPDF)),
         shareReplay(1),
     );

@@ -11,6 +11,7 @@ import { CacheService } from "./services/cache.service";
 import { ImageCacheService } from "./services/image-cache.service";
 import { PdfBuilder } from "./services/pdf-builder.service";
 import { ReportsService } from "./services/reports.service";
+import { UndoService } from "./services/undo.service";
 import { localStorageSubject } from "./util";
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs; // Fixes "File 'Roboto-Regular.ttf' not found in virtual file system"
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit {
         private pdfBuilder: PdfBuilder,
         private reports: ReportsService,
         private cache: CacheService,
+        public undo: UndoService,
         private imageCache: ImageCacheService,
     ) {
         this.theme.pipe(

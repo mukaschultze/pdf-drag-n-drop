@@ -39,13 +39,13 @@
         </button>
 
         <mat-menu #editMenu="matMenu">
-            <button mat-menu-item>
+            <button mat-menu-item [disabled]="!undo.peekUndo()" (click)="undo.undo()">
                 <mat-icon>undo</mat-icon>
-                <span>Undo</span>
+                <span>Undo ({{ undo.peekUndo()?.label || "Nothing" }})</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item [disabled]="!undo.peekRedo()" (click)="undo.redo()">
                 <mat-icon>redo</mat-icon>
-                <span>Redo</span>
+                <span>Redo ({{ undo.peekRedo()?.label || "Nothing" }})</span>
             </button>
         </mat-menu>
 

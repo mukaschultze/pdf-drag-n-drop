@@ -15,6 +15,10 @@ export function mergeToArray<T, O>(project: (value: T, index: number) => Observa
     );
 }
 
+export function deepClone<T>(value: T): T {
+    return JSON.parse(JSON.stringify(value));
+}
+
 export function localStorageSubject<T>(key: string, defaultValue: T): BehaviorSubject<T> {
     let value = null;
     const savedJson = localStorage.getItem(key);
