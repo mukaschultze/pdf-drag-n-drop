@@ -131,5 +131,8 @@
       }
     }
   },
-  "defaultProject": "pdf-drag-n-drop"
+  "defaultProject": "pdf-drag-n-drop",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
